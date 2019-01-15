@@ -4,11 +4,8 @@ const factorial = (n) => {
       }
       else {
         return n * factorial(n - 1);
-      }
+      };
 };
-//import * as math from 'mathjs';
-
-//import math from 'mathjs';
 
 class Cacher{   
     constructor() {
@@ -17,31 +14,31 @@ class Cacher{
 
     withCache(func) {
         return (arg) => {  
-            //let start, end, time, result;
-            let result;
+            let startTime, 
+                endTime, 
+                timeString, 
+                result;
 
             if (arg in this.cache){
-                //start = new Date().getTime();
+                startTime = performance.now();               
                 result = this.cache[arg];
-                /*end = new Date().getTime();
-                time = (end - start);  // рассчитаем время выполнения
-                console.log(time);*/
+                endTime = performance.now();
+                timeString = `Time: ${endTime - startTime}`;
                 
-                return result + " from cache";
+                return `${result} from cache, ${timeString}`;
             }  
             else {
-                //start = new Date().getTime();
+                startTime = performance.now();
                 result = func(arg);
-                /*end = new Date().getTime();
-                time = (end - start);  // рассчитаем время выполнения
-                console.log(time);*/
+                endTime = performance.now();
+                timeString = `Time: ${endTime - startTime}`;
                 this.cache[arg] = func(arg);
 
-                return result;
+                return `${result}, ${timeString}`;
             };
-        }
-    }
-}
+        };
+    };
+};
 
 const cacher = new Cacher();
 const func = cacher.withCache(factorial);
@@ -54,7 +51,7 @@ calcBtn.addEventListener("click", () => {
     let result = func(inputValue);
 
     var p = document.createElement("p");
-    p.innerHTML = "Result: " + result;
+    p.innerHTML = `Result: ${result}`;
     const body = document.querySelector("body");
     body.appendChild(p);
 });
