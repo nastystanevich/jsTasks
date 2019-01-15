@@ -1,12 +1,3 @@
-const factorial = (n) => {
-    if (n == 0) {
-        return 1;
-      }
-      else {
-        return n * factorial(n - 1);
-      };
-};
-
 class Cacher{   
     constructor() {
         this.cache = {};
@@ -29,10 +20,10 @@ class Cacher{
             }  
             else {
                 startTime = performance.now();
-                result = func(arg);
+                result = math.factorial(arg);
                 endTime = performance.now();
                 timeString = `Time: ${endTime - startTime}`;
-                this.cache[arg] = func(arg);
+                this.cache[arg] = math.factorial(arg);
 
                 return `${result}, ${timeString}`;
             };
@@ -41,7 +32,7 @@ class Cacher{
 };
 
 const cacher = new Cacher();
-const func = cacher.withCache(factorial);
+const func = cacher.withCache();
 
 const inputField = document.querySelector("#input-field");
 const calcBtn = document.querySelector("#calc-btn");
