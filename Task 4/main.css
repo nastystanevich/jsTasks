@@ -1,0 +1,69 @@
+* {
+    padding: 0px;
+    margin: 0px;
+    box-sizing: border-box;
+    outline: none;
+}
+#wrapper {
+    display: flex;
+    justify-content: space-around;
+    align-items: stretch;  
+}
+#build-btn {
+    width: 100px;
+    height: 100px;
+    line-height: 100px;
+    margin: auto;
+    background-color: aquamarine;
+    border: 1px solid lightslategray;
+}
+#build-btn:hover {
+    cursor: pointer;
+    
+}
+
+section {
+    border: 2px solid grey;
+    min-height: 500px;
+    min-width: 400px;
+    
+}
+.input-field {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    font-size: 18px;
+}
+label {
+    color: lightslategrey;
+}
+label::after {
+    content: ":";
+    padding-right: 10px;
+}
+.string{
+    color: green;
+}
+.string::before, .string::after{
+    content: "\"";
+}
+.number {
+    color: red;
+}
+.null {
+    color: blue;
+}
+.boolean {
+    color: orange;
+}
+.object {
+    border: 1px solid red;
+}
+.object:hover {
+    cursor: pointer;
+}
+div {
+    padding-left: 15px; 
+}
+
+
