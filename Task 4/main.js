@@ -1,8 +1,11 @@
 const buildBtn = document.querySelector("#build-btn");
-const objectDivContainer = document.querySelector(".object");
+const objectDivContainer = document.querySelector(".main");
 let json;
 
+objectDivContainer.addEventListener("click", handleObjectClick);
+
 buildBtn.addEventListener("click", () => {
+    clearTree();
     const inputString = document.querySelector(".input-field").value;
 
     try{
@@ -15,6 +18,15 @@ buildBtn.addEventListener("click", () => {
 
     goThrough(json);
 });
+
+function clearTree() {
+    const divs = document.querySelectorAll(".main > div");
+    if (divs.length) {
+        divs.forEach(div => {
+            objectDivContainer.removeChild(div);
+        });     
+    };
+};
 
 function goThrough(object, divContainer = objectDivContainer) {
     for (let key in object) {        
@@ -37,17 +49,21 @@ function createNode(key, json, container){
 
     let type = typeof(json[key]);
 
-    if (type === "object") {
-        div.classList.add(type);
-        if (json[key] instanceof Array) {
-            span.innerText = "[]";
-        }
-        else if (key == "null") {
+    if (type === "object") {        
+        if (key === "null") {
             span.innerText = key;
             span.classList.add(key);
         }
         else {
-            span.innerText = "{}";
+            div.classList.add(type, "opened");
+            div.addEventListener("click", handleObjectClick);
+
+            if (json[key] instanceof Array) {
+                span.innerText = "[]";
+            }
+            else {
+                span.innerText = "{}";
+            };
         };
     }
     else {
@@ -61,3 +77,17 @@ function createNode(key, json, container){
     
     return div;
 };
+
+function handleObjectClick(event) {
+    event.stopImmediatePropagation();
+    const object = event.target;
+    
+    if (object.classList.contains("opened")){
+        object.classList.remove("opened");
+        object.classList.add("closed");
+    } 
+    else {
+        object.classList.remove("closed");
+        object.classList.add("opened");
+    }
+}

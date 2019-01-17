@@ -14,24 +14,36 @@
     height: 100px;
     line-height: 100px;
     margin: auto;
-    background-color: aquamarine;
-    border: 1px solid lightslategray;
+    background-color: darkorange;
+    border: 1px solid darkorange;
+    font: 14pt sans-serif;
+    color: white;
 }
-#build-btn:hover {
-    cursor: pointer;
-    
+#build-btn:hover, 
+.object::before {
+    cursor: pointer;   
 }
 section {
-    border: 2px solid grey;
-    min-height: 500px;
-    min-width: 400px;
-    
+    border: 1px solid darkorange;
+    height: 500px;
+    width: 400px; 
+    display: flex;
+    flex-direction: column;  
+}
+.section-header {
+    background-color: darkorange;
+    font: 16pt sans-serif;
+    color: white;
+    text-align: center;
+    padding: 10px
 }
 .input-field {
     position: relative;
     width: 100%;
+    min-width: 100%;
+    max-width: 100%;
     height: 100%;
-    font-size: 18px;
+    border: none;
 }
 label {
     color: lightslategrey;
@@ -56,13 +68,31 @@ label::after {
     color: orange;
 }
 .object {
-    border: 1px solid red;
+    position: relative;
 }
-.object:hover {
-    cursor: pointer;
-}
+
 div {
     padding-left: 15px; 
+}
+.object.opened div {
+    display: block;
+}
+.object.closed div {
+    display: none;
+}
+.object.opened::before {
+    content: ''; 
+    position: absolute;
+    left: 2px; top: 6px;
+    border: 5px solid transparent;
+    border-top: 7px solid black; 
+}
+.object.closed::before {
+    content: ''; 
+    position: absolute; 
+    left: 4px; top: 5px; 
+    border: 5px solid transparent; 
+    border-left: 7px solid black; 
 }
 
 
