@@ -3,21 +3,21 @@
         constructor(arg) {
             const that = this;
             function setProps(date) {
-                that.day = date.getDay();
-                that.month = date.getMonth() || date.getMonth() + 1;
+                that.day = date.getDate();
+                that.month = date.getMonth() + 1;
                 that.year = date.getFullYear();
             };
 
             if(arg instanceof Date) {
                 setProps(arg);
             }
-            else if(typeof(arg) == "number") {
+            else if(typeof(arg) === "number") {
                 setProps(new Date(arg));
-            };
+            };     
         };
 
-        static parse(dateString, datePattern) {
-            const patternParts = {
+        static getPatternParts() {
+            return {
                 day : {
                     abbr: "DD",
                     positon : null
@@ -30,15 +30,19 @@
                     abbr: "YYYY",
                     positon: null
                 }
-            }; 
+            };
+        };
+
+        static parse(dateString, datePattern) {
+            const patternParts = this.getPatternParts();
             
             let date = new OneMoment();
-
-            for (let prop in patternParts) {
+            
+            for (const prop in patternParts) {
                 patternParts[prop].positon = datePattern.indexOf(patternParts[prop].abbr);
 
                 if (~patternParts[prop].positon) {
-                    date[prop] = Number.parseInt(dateString.substr(patternParts[prop].positon, prop == 'year' ? 4 : 2));
+                    date[prop] = Number.parseInt(dateString.substr(patternParts[prop].positon, prop === 'year' ? 4 : 2));
                 };
             };
             
@@ -46,89 +50,77 @@
         };
 
         format(datePattern) {
-            const patternParts = {
-                day : "DD",
-                month : "MM",
-                year : "YYYY"
-            };
+            const patternParts = this.getPatternParts();
             let dateString = datePattern;
 
-            for (let prop in patternParts) {
-                dateString = dateString.replace(patternParts[prop], this[prop] < 10 ? `0${this[prop]}` : this[prop]);
+            for (const prop in patternParts) {
+                dateString = dateString.replace(patternParts[prop].abbr, getNumberWithZero(this, prop));
+            };
+
+            function getNumberWithZero(date, property) {
+                return date[property] < 10 ? `0${date[property]}` : date[property];
             };
 
             return dateString;
         };
-
+        
         fromNow() {
-            const now = new OneMoment(new Date());
+            const oneDay = 1000*60*60*24; //in ms
+            const oneMonth = 30; // in days
+            const oneYear = 12; //in months
 
-            let difference = {
+            const dateNow = Date.now();
+            const date = Date.parse(this.toDate());
+
+            let millisecondsDiff = date - dateNow;
+            let isFuture = true; //ago or in
+
+            if(millisecondsDiff <= 0) {
+                isFuture = false;
+                millisecondsDiff *= -1;               
+            }; 
+            
+            let diff = {
                 day: null,
                 month: null,
                 year: null
             };
 
-            let isFuture = true; //ago or in
-
-            if (this.year < now.year) {
-                isFuture = false;
-
-                for (let prop in difference) {
-                    difference[prop] = now[prop] - this[prop];
-                };
-    
-                if(difference.day < 0) {
-                    difference.day += 30;
-                    difference.month--; 
-                };
-
-                if(difference.month < 0) {
-                    difference.month += 12;
-                    difference.year--; 
-                };
-            } 
-            else {
-                for (let prop in difference) {
-                    difference[prop] = this[prop] - now[prop];
-                };
-
-                if(difference.day < 0) {
-                    difference.day = 30 - now.day + this.day;
-                    difference.month--; 
-                };
-
-                if(difference.month < 0) {
-                    difference.month = 12 - now.month + this.month;
-                    difference.year--; 
-                };
+            diff.day = Number.parseInt(millisecondsDiff / oneDay);
+            if(diff.day >= oneMonth) {
+                diff.month = Number.parseInt(diff.day / oneMonth);
+                diff.day = diff.day % oneMonth;
             };
-            
-            let resultString = "";
+            if(diff.month >= oneYear) {
+                diff.year = Number.parseInt(diff.month / oneYear);
+                diff.month = diff.month % oneYear;
+            };
 
-            for (let prop in difference) {
+            let resultString = "";
+            for(let prop in diff) {
                 let propStr = prop;
 
-                if (difference[prop]) {
+                if(diff[prop]) {
                     propStr = prop + 's';
-                    resultString += `${difference[prop]} ${propStr} `;
-                }
+                    resultString += `${diff[prop]} ${propStr}`;
+                };
             };
 
-            if (isFuture) {
-                resultString = "in ".concat(resultString);
+            if(isFuture) {
+                return `in ${resultString}`;
+            }
+            else if(diff.day) {
+                return `${resultString} ago`;
             }
             else {
-                resultString += "ago";
+                return "today";
             };
-
-            return resultString;
         };
 
         toDate() {
             return new Date(
                 this.year,
-                this.month, 
+                this.month - 1, 
                 this.day
             );
         };         
@@ -139,3 +131,4 @@
     else
         window.OneMoment = OneMoment;
 })();
+

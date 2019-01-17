@@ -1,3 +1,7 @@
+math.config({
+    precision: 12
+  })
+
 class Cacher{   
     constructor() {
         this.cache = {};
@@ -5,44 +9,38 @@ class Cacher{
 
     withCache(func) {
         return (arg) => {  
-            let startTime, 
-                endTime, 
-                timeString, 
-                result;
+            let result;
 
-            if (arg in this.cache){
-                startTime = performance.now();               
-                result = this.cache[arg];
-                endTime = performance.now();
-                timeString = `Time: ${endTime - startTime}`;
-                
-                return `${result} from cache, ${timeString}`;
+            if (arg in this.cache){              
+                result = `${this.cache[arg]} from cache`; 
             }  
             else {
-                startTime = performance.now();
-                result = math.factorial(arg);
-                endTime = performance.now();
-                timeString = `Time: ${endTime - startTime}`;
+                result = func(math.bignumber(arg));
                 this.cache[arg] = math.factorial(arg);
-
-                return `${result}, ${timeString}`;
+                this.cache[arg] = result;
             };
+            return result;
         };
     };
 };
 
 const cacher = new Cacher();
-const func = cacher.withCache();
+const factorial = cacher.withCache(math.factorial);
 
 const inputField = document.querySelector("#input-field");
 const calcBtn = document.querySelector("#calc-btn");
 
 calcBtn.addEventListener("click", () => {
-    let inputValue = inputField.value;
-    let result = func(inputValue);
+    const inputValue = inputField.value;
+
+    startTime = performance.now(); 
+    const result = factorial(inputValue);
+    endTime = performance.now();
+    timeString = `Time: ${endTime - startTime}`;
 
     var p = document.createElement("p");
-    p.innerHTML = `Result: ${result}`;
+    p.innerHTML = `Result: ${result}, ${timeString}`;
+    
     const body = document.querySelector("body");
     body.appendChild(p);
 });
