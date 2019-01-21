@@ -1,0 +1,61 @@
+@import 'reset';
+
+$font: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+$main-font-size: 30px;
+$small-font-size: 0.5em;
+$small-padding: 10px;
+$media-size: 600px;
+
+@mixin flexible($direction: "row", $wrap: "no-wrap", $justifying: "start") {
+    display: flex;
+    flex-direction: $direction;
+    justify-content: $justifying;
+    flex-wrap: $wrap;
+}
+@mixin buttonStyle($cursor, $color) {
+    cursor: $cursor;
+    background-color: $color;
+}
+#wrapper {
+    width: 520px;
+    margin: 10% auto; 
+    font-family: $font;
+    font-size: $main-font-size;
+    @include flexible(row, wrap, space-between);
+}
+#result {
+    @include flexible(column);
+    padding-top: $small-padding * 2;
+    font-size: $small-font-size;
+    p {
+        padding-top: $small-padding;
+    }
+}
+#input-field {
+    line-height: $main-font-size;
+    font-size: $small-font-size;
+    outline: none;
+}
+#calc-btn {
+    font-size: $small-font-size;
+    @include buttonStyle(auto, orange);
+    border: 1px solid darkorange;
+    padding: $small-padding;
+}
+#calc-btn:hover {
+    @include buttonStyle(pointer, darkorange);
+}
+#calc-btn:active {
+    @include buttonStyle(auto, gray);  
+}
+@media (max-width: $media-size) {
+    #wrapper {
+        flex-direction: column;
+        width: 100%;
+        padding: $small-padding;
+    }
+    #input-field
+    {
+        margin: 5px 0px;
+    }
+  }
