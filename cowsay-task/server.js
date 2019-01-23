@@ -4,30 +4,21 @@ const cowsay = require('cowsay');
 const app = express();
 const port = 3000;
 
-//http://localhost:3000/cow/think
 app.get('/', function (req, res) {
-    const result = cowsay.say({
-        text : `I'm a cow`
-    });
-    res.send(result);
+    const queryString = getQueryString(req);
+    res.redirect(`/cow/say?${queryString}`);
+});
+app.get('/:actor', function (req, res) {
+    const queryString = getQueryString(req);
+    res.redirect(`/${req.params.actor}/say?${queryString}`);
 });
 app.get('/:actor/:method', function (req, res) {
-    const method = req.params.method;
+    const method = req.params.method || "say";
     const actor = req.params.actor === "cow" ? "default" : req.params.actor;
-    console.log(actor);
+    const textToSay = req.query['phrase'] || `I'm a ${actor === "default" ? "cow" : actor} and I can ${method}`
 
     const result = cowsay[method]({
-        text : `I'm a ${actor} and I can ${method}`,
-        f: actor
-    });
-    res.send(result);
-});
-app.get('/:actor/:method/:message', function (req, res) {
-    const method = req.params.method;
-    const actor = req.params.actor === "cow" ? "default" : req.params.actor;
-
-    const result = cowsay[method]({
-        text : req.params.message,
+        text : textToSay,
         f: actor
     });
     res.send(result);
@@ -36,3 +27,12 @@ app.get('/:actor/:method/:message', function (req, res) {
 app.listen(port, function () {
   console.log(`Cowsay listen on http://localhost:${port}!`);
 });
+
+function getQueryString(req) {
+    let queryStringParts = new Array();
+    for(const key in req.query) {
+        queryStringParts.push(key + '=' + encodeURIComponent(req.query[key]));
+    }
+    const queryString = queryStringParts.join('&');
+    return queryString;
+};
