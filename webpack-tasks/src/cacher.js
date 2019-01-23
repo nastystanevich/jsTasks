@@ -1,3 +1,5 @@
+import math from "mathjs";
+
 math.config({
     precision: 12
   })
@@ -10,19 +12,19 @@ class Cacher{
     withCache(func) {
         return (arg) => {  
             let result;
-
             if (arg in this.cache){              
                 result = `${this.cache[arg]} from cache`; 
+                return result;
             }  
             else {
                 result = func(math.bignumber(arg));
-                this.cache[arg] = math.factorial(arg);
                 this.cache[arg] = result;
             };
             return result;
         };
     };
 };
+
 
 const cacher = new Cacher();
 const factorial = cacher.withCache(math.factorial);
@@ -33,12 +35,12 @@ calcBtn.addEventListener("click", () => {
     
     calcBtn.setAttribute("disabled", true);
 
-    startTime = performance.now(); 
+    const startTime = performance.now(); 
     const result = factorial(inputField);
-    endTime = performance.now();
-    timeString = `Time: ${endTime - startTime}`;
+    const endTime = performance.now();
+    const timeString = `Time: ${endTime - startTime}`;
 
-    var p = document.createElement("p");
+    let p = document.createElement("p");
     p.innerHTML = `Result: ${result}, ${timeString}`;
     
     const resultDiv = document.querySelector("#result");
