@@ -1,7 +1,7 @@
 * {
+    box-sizing: border-box;
     padding: 0px;
     margin: 0px;
-    box-sizing: border-box;
     outline: none;
 }
 #wrapper {
@@ -24,18 +24,18 @@
     cursor: pointer;   
 }
 section {
-    border: 1px solid darkorange;
+    display: flex;
+    flex-direction: column;
     height: 500px;
     width: 400px; 
-    display: flex;
-    flex-direction: column;  
+    border: 1px solid darkorange;     
 }
 .section-header {
+    padding: 10px;
     background-color: darkorange;
     font: 16pt sans-serif;
     color: white;
-    text-align: center;
-    padding: 10px
+    text-align: center; 
 }
 .input-field {
     position: relative;
@@ -55,9 +55,6 @@ label::after {
 .string{
     color: green;
 }
-.string::before, .string::after{
-    content: "\"";
-}
 .number {
     color: red;
 }
@@ -70,17 +67,16 @@ label::after {
 .object {
     position: relative;
 }
-
 div {
     padding-left: 15px; 
 }
-.object.opened div {
+.object div {
     display: block;
 }
 .object.closed div {
     display: none;
 }
-.object.opened::before {
+.object::before {
     content: ''; 
     position: absolute;
     left: 2px; top: 6px;

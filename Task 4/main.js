@@ -21,15 +21,13 @@ buildBtn.addEventListener("click", () => {
 
 function clearTree() {
     const divs = document.querySelectorAll(".main > div");
-    if (divs.length) {
-        divs.forEach(div => {
-            objectDivContainer.removeChild(div);
-        });     
-    };
+    divs.forEach(div => {
+        objectDivContainer.removeChild(div);
+    });     
 };
 
 function goThrough(object, divContainer = objectDivContainer) {
-    for (let key in object) {        
+    for (const key in object) {        
         if (object[key] instanceof Object) {
             const node = createNode(key, object, divContainer);
             goThrough(object[key], node);
@@ -47,15 +45,16 @@ function createNode(key, json, container){
 
     label.innerText = key;
 
-    let type = typeof(json[key]);
-
+    const type = typeof(json[key]);
+    const value = JSON.stringify(json[key]);
+ 
     if (type === "object") {        
-        if (key === "null") {
-            span.innerText = key;
-            span.classList.add(key);
+        if (json[key] === null) {
+            span.innerText = value;
+            span.classList.add(value);
         }
         else {
-            div.classList.add(type, "opened");
+            div.classList.add(type);
             div.addEventListener("click", handleObjectClick);
 
             if (json[key] instanceof Array) {
@@ -67,7 +66,7 @@ function createNode(key, json, container){
         };
     }
     else {
-        span.innerText = json[key] || key;
+        span.innerText = value;
         span.classList.add(type);
     };
 
@@ -81,13 +80,5 @@ function createNode(key, json, container){
 function handleObjectClick(event) {
     event.stopImmediatePropagation();
     const object = event.target;
-    
-    if (object.classList.contains("opened")){
-        object.classList.remove("opened");
-        object.classList.add("closed");
-    } 
-    else {
-        object.classList.remove("closed");
-        object.classList.add("opened");
-    }
-}
+    object.classList.toggle("closed");
+};
